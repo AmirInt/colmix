@@ -1,7 +1,7 @@
 """Mixture model based on kmeans"""
 from typing import Tuple
 import numpy as np
-from common import GaussianMixture
+from src.common import GaussianMixture
 
 
 def estep(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
@@ -23,7 +23,7 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
 
     for i in range(n):
         tiled_vector = np.tile(X[i, :], (K, 1))
-        sse = ((tiled_vector - mixture.mu)**2).sum(axis=1)
+        sse = ((tiled_vector - mixture.mu)**2).sum(axis=1) # Sum of squared error
         j = np.argmin(sse)
         post[i, j] = 1
 

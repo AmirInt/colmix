@@ -2,7 +2,7 @@
 from typing import Tuple
 import numpy as np
 from scipy.special import logsumexp
-from common import GaussianMixture
+from src.common import GaussianMixture
 
 
 def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:

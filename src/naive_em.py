@@ -1,7 +1,7 @@
 """Mixture model using EM"""
 from typing import Tuple
 import numpy as np
-from common import GaussianMixture
+from src.common import GaussianMixture
 
 
 
