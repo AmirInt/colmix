@@ -26,6 +26,8 @@ def run_kmeans():
 
 def run_naive_em():
     X = np.loadtxt("datasets/toy_data.txt")
+    best_bic = -np.inf
+    best_K = None
     for K in range(1, 5):
         best_mixture = None
         best_post = None
@@ -40,7 +42,13 @@ def run_naive_em():
                 best_post = post
                 best_mixture = mixture
             
+            current_bic = common.bic(X, mixture, log_likelihood)
+            if current_bic > best_bic:
+                best_bic = current_bic
+                best_K = K
         common.plot(X, best_mixture, best_post, f"Best of K={K}, log_likelihood={log_likelihood}")
+
+    print(f"Best K: {best_K}, Best BIC: {best_bic}")
 
 
 def main():
