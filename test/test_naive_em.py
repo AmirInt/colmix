@@ -3,14 +3,13 @@ import sys
 sys.path.append(os.getcwd())
 import numpy as np
 import src.naive_em as naive_em
-import src.em as em
 import src.common as common
 
-X = np.loadtxt("datasets/test_incomplete.txt")
-X_gold = np.loadtxt("datasets/test_complete.txt")
 X_toy = np.loadtxt("datasets/toy_data.txt")
 
 # Testing naive_em methods
+X = np.loadtxt("datasets/test_incomplete.txt")
+X_gold = np.loadtxt("datasets/test_complete.txt")
 
 K = 3
 n, d = X_toy.shape
