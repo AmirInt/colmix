@@ -112,10 +112,35 @@ def fill_matrix(X: np.ndarray, mixture: GaussianMixture) -> np.ndarray:
     """Fills an incomplete matrix according to a mixture model
 
     Args:
-        X: (n, d) array of incomplete data (incomplete entries =0)
+        X: (n, d) array of incomplete data (incomplete entries = 0)
         mixture: a mixture of gaussians
 
     Returns
         np.ndarray: a (n, d) array with completed data
     """
-    raise NotImplementedError
+    n, _ = X.shape
+    K = mixture.p.size
+    
+    # Calculate the posterior probabilities
+    i_gen_by_j = np.zeros((n, K))
+    post = np.zeros((n, K))
+    for i in range(n):
+        c = X[i] != 0.
+        for j in range(K):
+            s = X[i, c] - mixture.mu[j, c]
+            i_gen_by_j[i, j] = (-1 / (2 * mixture.var[j]) * (s * s).sum()) - c.sum() / 2 * np.log(2 * np.pi * mixture.var[j])
+
+    post =  np.log(mixture.p + 1e-16) + i_gen_by_j
+    post_max = np.max(post, axis=1).reshape(-1, 1)
+    post -= post_max + (logsumexp(post - post_max, axis=1).reshape(-1, 1))
+    post = np.exp(post)
+
+    X_pred = np.copy(X)
+
+    # Calculate the missing values
+    for i in range(n):
+        mu_mean = post[i] @ mixture.mu
+        c = np.logical_not(X[i] != 0.)
+        X_pred[i, c] = mu_mean[c]
+
+    return X_pred
