@@ -53,6 +53,8 @@ def run_naive_em():
 
 def run_em():
     X = np.loadtxt("datasets/netflix_incomplete.txt")
+    
+    # Find the best GMM for the data
     for K in [1, 12]:
         best_mixture = None
         best_post = None
@@ -68,6 +70,15 @@ def run_em():
                 best_mixture = mixture
         
         common.plot(X, best_mixture, best_post, f"Best of K={K}, log_likelihood={best_log_likelihood}")
+
+    # Predict the missing values
+    X_pred = em.fill_matrix(X, best_mixture)
+
+    np.savetxt("netflix_prediction.txt", X_pred, "%.2f")
+
+    # Calculate the Root Means Squared Error between the predicted and real data
+    X_gold = np.loadtxt("datasets/netflix_complete.txt")
+    print(common.rmse(X_pred, X_gold))
 
 
 def main():
