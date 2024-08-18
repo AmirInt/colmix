@@ -5,6 +5,14 @@ import src.common as common
 import src.naive_em as naive_em
 import src.em as em
 
+
+def display_usage():
+    print("Usage: 'python3 main.py [option]'")
+    print("Options:")
+    print("\t'kmeans': Run the K-means algorithm on toy data and display each run's results")
+    print("\t'naive_em': Run the EM algorithm on toy data and display each run's results")
+    print("\t'em': Run the EM algorithm on incomplete Netflix data, display the results, predict the missing values and report the RMSE index")
+    
 def run_kmeans():
     X = np.loadtxt("datasets/toy_data.txt")
     for K in range(1, 5):
@@ -78,19 +86,24 @@ def run_em():
 
     # Calculate the Root Means Squared Error between the predicted and real data
     X_gold = np.loadtxt("datasets/netflix_complete.txt")
-    print(common.rmse(X_pred, X_gold))
+    print(f"RMSE: {common.rmse(X_pred, X_gold)}")
 
 
 def main():
-    if sys.argv[1] == "kmeans":
-        run_kmeans()
-        
-    if sys.argv[1] == "naive_em":
-        run_naive_em()
+    try:
+        if sys.argv[1] == "kmeans":
+            run_kmeans()
+            
+        elif sys.argv[1] == "naive_em":
+            run_naive_em()
 
-    if sys.argv[1] == "em":
-        run_em()
+        elif sys.argv[1] == "em":
+            run_em()
 
+        else:
+            display_usage()
+    except IndexError:
+        display_usage()
 
 if __name__ == "__main__":
     main()
