@@ -46,9 +46,28 @@ def run_naive_em():
             if current_bic > best_bic:
                 best_bic = current_bic
                 best_K = K
-        common.plot(X, best_mixture, best_post, f"Best of K={K}, log_likelihood={log_likelihood}")
+        common.plot(X, best_mixture, best_post, f"Best of K={K}, log_likelihood={best_log_likelihood}")
 
     print(f"Best K: {best_K}, Best BIC: {best_bic}")
+
+
+def run_em():
+    X = np.loadtxt("datasets/netflix_incomplete.txt")
+    for K in [1, 12]:
+        best_mixture = None
+        best_post = None
+        best_log_likelihood = -np.inf
+
+        for seed in range(5):
+            mixture, post = common.init(X, K, seed)
+            mixture, post, log_likelihood = em.run(X, mixture, post)
+            common.plot(X, mixture, post, f"K={K}, seed={seed}, log_likelihood={log_likelihood}")
+            if log_likelihood > best_log_likelihood:
+                best_log_likelihood = log_likelihood
+                best_post = post
+                best_mixture = mixture
+        
+        common.plot(X, best_mixture, best_post, f"Best of K={K}, log_likelihood={best_log_likelihood}")
 
 
 def main():
@@ -57,6 +76,9 @@ def main():
         
     if sys.argv[1] == "naive_em":
         run_naive_em()
+
+    if sys.argv[1] == "em":
+        run_em()
 
 
 if __name__ == "__main__":
