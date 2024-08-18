@@ -27,8 +27,8 @@ def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
         c = X[i] != 0.
         for j in range(K):
             s = X[i, c] - mixture.mu[j, c]
-            i_gen_by_j[i, j] = (-1 / (2 * mixture.var[j]) * (s * s).sum()) - np.log(np.sqrt(2 * np.pi * mixture.var[j]) ** c.sum())
-    
+            i_gen_by_j[i, j] = (-1 / (2 * mixture.var[j]) * (s * s).sum()) - c.sum() / 2 * np.log(2 * np.pi * mixture.var[j])
+
     post =  np.log(mixture.p + 1e-16) + i_gen_by_j
     post_max = np.max(post, axis=1).reshape(-1, 1)
     post -= post_max + (logsumexp(post - post_max, axis=1).reshape(-1, 1))
@@ -102,10 +102,8 @@ def run(X: np.ndarray, mixture: GaussianMixture,
           abs(new_log_likelihood - old_log_likelihood) >= epsilon * abs(new_log_likelihood):
         
         old_log_likelihood = new_log_likelihood
-
         post, new_log_likelihood = estep(X, mixture)
-
-        mixture = mstep(X, post)
+        mixture = mstep(X, post, mixture)
     
     return mixture, post, new_log_likelihood
 
