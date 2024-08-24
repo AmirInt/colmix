@@ -16,4 +16,6 @@ pip3 install -r requirements.txt
 
 Run main.py with option help to see a list of options to execute:
 
+```
 python3 main.py help
+```
